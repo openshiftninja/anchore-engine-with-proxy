@@ -5,22 +5,23 @@ This is a really simple little project that I created to deal with some issues I
 
 ## dependencies
 
-This project depends on the image created by the **anchore-proxy** project at [https://github.com/tellmejeff/anchore-proxy](https://github.com/tellmejeff/anchore-proxy). It also extends the **anchore-engine** image.
+This project depends on the image **anchore/anchore-engine**.
 
 ## building
 
-To build the image, run the following commands:
+To build the images for this project, run the following commands:
 
 ```
 docker pull docker.io/anchore/anchore-engine
 docker build -t anchore-engine-with-proxy:latest .
+docker build -t anchore-proxy:latest anchore-proxy
 ```
 
 ## usage
 
-The included **docker-compose.yaml** file provides a sample of how to run the **anchore engine**. It is based off the sample compose file that anchore provides; the only difference is that it refers to my image instead of theirs and it also includes another image called **anchore-proxy**. That image can be built from the project at [https://github.com/tellmejeff/anchore-proxy](https://github.com/tellmejeff/anchore-proxy).
+The included **docker-compose.yaml** file provides a sample of how to run the **anchore engine**. It is based off the sample compose file that anchore provides; the only difference is that it uses my **anchore-engine-with-proxy** image instead of theirs and adds a service based on the **anchore-proxy** image.
 
-Once you have all the required images, you can run the engine like this in the directory where the **docker-compose.yaml** file is:
+Once you have all the required images built/pulled, you can run the engine like this in the directory where the **docker-compose.yaml** file is:
 
 ```
 docker-compose up
