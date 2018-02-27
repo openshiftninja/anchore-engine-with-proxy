@@ -1,0 +1,63 @@
+--- /root/anchore-engine/anchore_engine/clients/feeds/feed_service/feeds.py	(revision )
++++ /root/anchore-engine/anchore_engine/clients/feeds/feed_service/feeds.py	(revision )
+@@ -1,4 +1,5 @@
+ import requests
++import requests_proxy
+ import requests.exceptions
+ import base64
+ import json
+@@ -84,7 +85,7 @@
+                 else:
+                     auth = (self.user, self.password)
+                     logger.debug("making authenticated request (user="+str(self.user)+") to url: " + str(url))
+-                    r = requests.get(url, auth=auth, timeout=(conn_timeout, read_timeout))
++                    r = requests_proxy.get(url, auth=auth, timeout=(conn_timeout, read_timeout))
+                     logger.debug("\tresponse status_code: " + str(r.status_code))
+                     if r.status_code == 401:
+                         logger.debug("Got HTTP 401 on authenticated GET, response body: " + str(r.text))
+@@ -161,7 +162,7 @@
+         user_url = self.anchore_auth['client_info_url'] + '/' + self.anchore_auth['username']
+         user_timeout = 60
+         retries = 3
+-        result = requests.get(user_url, headers={'x-anchore-password': self.anchore_auth['password']})
++        result = requests_proxy.get(user_url, headers={'x-anchore-password': self.anchore_auth['password']})
+         if result.status_code == 200:
+             user_data = json.loads(result.content)
+         else:
+@@ -206,7 +207,7 @@
+             url = client_info_url + "/" + username
+             headers = {'x-anchore-password': password}
+             try:
+-                r = requests.get(url, headers=headers, timeout=timeout_tuple)
++                r = requests_proxy.get(url, headers=headers, timeout=timeout_tuple)
+             except:
+                 # print "request timed out"
+                 ret['text'] = json.dumps("connection timed out: increase self.anchore_auth_conn_timeout higher or try again")
+@@ -237,7 +238,7 @@
+                 'cache-control': "no-cache",
+             }
+             try:
+-                r = requests.post(token_url, headers=headers, data=payload, timeout=timeout_tuple)
++                r = requests_proxy.post(token_url, headers=headers, data=payload, timeout=timeout_tuple)
+             except:
+                 # print "request timed out"
+                 ret['text'] = json.dumps("connection timed out: increase self.anchore_auth_conn_timeout higher or try again")
+@@ -260,7 +261,7 @@
+                 'cache-control': "no-cache",
+             }
+             try:
+-                r = requests.post(token_url, headers=headers, data=payload, timeout=timeout_tuple)
++                r = requests_proxy.post(token_url, headers=headers, data=payload, timeout=timeout_tuple)
+             except:
+                 # print "request timed out"
+                 ret['text'] = json.dumps("connection timed out: increase self.anchore_auth_conn_timeout higher or try again")
+@@ -335,7 +336,7 @@
+                     headers = {"Authorization": "Bearer " + accessToken, "Cache-Control": "no-cache"}
+
+                     logger.debug("making authenticated request to url: " + str(url))
+-                    r = requests.get(url, headers=headers, timeout=(conn_timeout, read_timeout))
++                    r = requests_proxy.get(url, headers=headers, timeout=(conn_timeout, read_timeout))
+                     logger.debug("\tresponse status_code: " + str(r.status_code))
+                     if r.status_code == 401:
+                         logger.debug("Got HTTP 401 on authenticated GET, response body: " + str(r.text))
+

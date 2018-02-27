@@ -1,0 +1,43 @@
+# docker-compose that will start up the anchore-engine, anchore-db, and anchore-proxy
+# the anchore-engine-with-proxy image is built with the included Dockerfile
+# (docker build -t anchore-engine-with-proxy:latest .)
+# Note that this compose file depends on the anchore-proxy image, which is
+# located in a different github project at https://github.com/tellmejeff/anchore-proxy.git
+
+version: '2'
+services:
+  anchore-engine:
+    # this image extends the standard anchore-engine image
+    image: anchore-engine-with-proxy
+    privileged: true
+    depends_on:
+     - anchore-db
+     - anchore-proxy
+    ports:
+     - "8228:8228"
+     - "8338:8338"
+    volumes:
+     - ./config/:/config/:Z
+    logging:
+     driver: "json-file"
+     options:
+      max-size: 100m
+  anchore-db:
+    image: "postgres:9"
+    volumes:
+     - /tmp/db/:/var/lib/postgresql/data/pgdata/:Z
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+      - PGDATA=/var/lib/postgresql/data/pgdata/
+    logging:
+     driver: "json-file"
+     options:
+      max-size: 100m
+    #uncomment to expose a port to allow direct/external access to the DB, for debugging
+    #ports:
+    # - "2345:5432"
+  anchore-proxy:
+    container_name: anchore-proxy
+    image: anchore-proxy:latest
+    ports:
+      - "5000:5000"
