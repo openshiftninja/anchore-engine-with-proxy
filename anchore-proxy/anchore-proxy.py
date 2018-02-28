@@ -37,7 +37,7 @@ class ProxyRequest:
         except Exception:
             raise Exception("Invalid headers param")
         if is_post:
-            self.post_data = ProxyRequest.get_post_data()
+            self.post_data = self.get_post_data()
 
     def make_request(self):
         if self.is_post:
