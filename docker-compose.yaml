@@ -9,7 +9,6 @@ services:
   anchore-engine:
     # this image extends the standard anchore-engine image
     image: anchore-engine-with-proxy
-    privileged: true
     depends_on:
      - anchore-db
      - anchore-proxy
@@ -39,5 +38,6 @@ services:
   anchore-proxy:
     container_name: anchore-proxy
     image: anchore-proxy:latest
-    ports:
-      - "5000:5000"
+    #uncomment to expose the proxy to the world
+    #ports:
+    # - "5000:5000"

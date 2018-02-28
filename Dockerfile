@@ -1,4 +1,4 @@
-FROM anchore-engine
+FROM anchore/anchore-engine
 
 # i seem to have an issue with the epel repo, and I don't really need it so disable it for this install
 RUN yum-config-manager --disable epel
